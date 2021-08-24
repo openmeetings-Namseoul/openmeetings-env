@@ -1,10 +1,22 @@
-version: '3'
+version: '3.2'
 
 services:
+  coturn:
+    container_name: coturn
+    image: coturn/coturn:latest
+    restart: always
+    network_mode: host # port 3478 + [min-port]-[max-port]/udp
+    volumes:
+      # - type: tmpfs
+      #   target: /var/lib/coturn
+      - ./data/coturn/turnserver.conf:/etc/coturn/turnserver.conf
+    command: "-n --log-file=stdout --min-port=49152 --max-port=65535 --external-ip='${EXTERNAL_IP:?ERR_EXTERNAL_IP_BLANK}' --relay-ip='${EXTERNAL_IP:?ERR_EXTERNAL_IP_BLANK}'"
   kurento:
     container_name: kurento
     image: kurento/kurento-media-server:latest
     restart: always
+    depends_on:
+      - coturn
     ports:
       - 8888:8888
     volumes:
