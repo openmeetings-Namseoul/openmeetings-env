@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  kurento:
+    container_name: kurento
+    image: kurento/kurento-media-server:latest
+    restart: always
+    ports:
+      - 8888:8888
+    volumes:
+      - ./data/om_data:/opt/om_data
